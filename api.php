@@ -30,7 +30,6 @@ if(isset($_GET['trackingNo']))
 	$dateArray = array();
 	for($i=0;$i<count($tr[0]);$i++)
 	{
-		# check if the string not contains some string
 		if(strpos($tr[0][$i], '<tact>') === false)
 		{
 			# use regex to parse
@@ -39,10 +38,25 @@ if(isset($_GET['trackingNo']))
 			$dateArray[$i] = strip_tags($dateparsed[0][0]); # store the date into new array
 		}
 	}
-
 	# rearrange array index
 	$dateArray =  array_values($dateArray);
-	print_r($dateArray);
+
+	# parse the tracking table, get only the good stuff, and store into array
+	$trackres = array();
+	$j = 0; # index for accessing date array
+	for($i=0;$i<count($tr[0]);$i++)
+	{
+		# check if the string is not the date and time
+		if(strpos($tr[0][$i], '<tact>') !== false)
+		{
+			# parse the table by column <td>
+	        $tdpatern = "#<td>(.*?)</td>#";
+	        preg_match_all($tdpatern, $tr[0][$i], $td);
+	        print_r($td[0]);
+	        echo "<br>";
+		}
+	}
+
 	#print_r($tr[0]);
 }
 

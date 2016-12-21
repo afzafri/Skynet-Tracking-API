@@ -92,6 +92,8 @@ if(isset($_GET['trackingNo']))
 	            $trackres['data'][$i]['location'] = $location;
 			}
 		}
+		# rearrange the array index, make it start from 0
+		$trackres['data'] = array_values($trackres['data']); 
 	}
 	else
 	{

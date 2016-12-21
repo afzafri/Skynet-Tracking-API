@@ -36,7 +36,7 @@ if(isset($_GET['trackingNo']))
 			# use regex to parse
 			$datepatern = "#<b>(.*?)</b>#";
 			preg_match_all($datepatern, $tr[0][$i], $dateparsed);
-			$dateArray[$i] = $dateparsed[0][0]; # store the date into new array
+			$dateArray[$i] = strip_tags($dateparsed[0][0]); # store the date into new array
 		}
 	}
 

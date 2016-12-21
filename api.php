@@ -1,7 +1,5 @@
 <?php
 
-#http://www.courierworld.com/scripts/webcourier1.dll/TrackingResultwoheader?nid=1&uffid=&type=4&hawbno=TRACKING
-
 header("Access-Control-Allow-Origin: *"); # enable CORS
 
 if(isset($_GET['trackingNo']))
@@ -30,7 +28,7 @@ if(isset($_GET['trackingNo']))
 	$dateArray = array();
 	for($i=0;$i<count($tr[0]);$i++)
 	{
-		# check if the string not contains some string (only contains the date and time)
+		# check if the string not contains some string (only contains the date)
 		if(strpos($tr[0][$i], '<tact>') === false)
 		{
 			# use regex to parse
@@ -48,14 +46,21 @@ if(isset($_GET['trackingNo']))
 
 	for($i=0;$i<count($tr[0]);$i++)
 	{
-		# check if the string is not the date and time
+		# check if the string not contains the date
 		if(strpos($tr[0][$i], '<tact>') !== false)
 		{
 			# parse the table by column <td>
 	        $tdpatern = "#<td>(.*?)</td>#";
 	        preg_match_all($tdpatern, $tr[0][$i], $td);
-	        print_r($td[0]);
-	        echo "<br>";
+	        
+	        # store into variable, strip_tags is for removeing html tags
+            $process = strip_tags($td[0][0]);
+            $time = strip_tags($td[0][1]);
+            $location = strip_tags($td[0][2]);
+
+            echo "Process: $process <br>";
+            echo "Time: $time <br>";
+            echo "Location: $location <br><br>";
 		}
 	}
 

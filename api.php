@@ -24,7 +24,26 @@ if(isset($_GET['trackingNo']))
 	$trpatern = "#<tr(.*?)<\/tr>#";
 	preg_match_all($trpatern, implode($parsed[0],''), $tr);
 
-	print_r($tr[0]);
+	# parse and store only the date into an array.
+	# skynet html table does not store the date in column, but in row. 
+	# so we need to fetch the row, and store into column (hope this make sense lol)
+	$dateArray = array();
+	for($i=0;$i<count($tr[0]);$i++)
+	{
+		# check if the string not contains some string
+		if(strpos($tr[0][$i], '<tact>') === false)
+		{
+			# use regex to parse
+			$datepatern = "#<b>(.*?)</b>#";
+			preg_match_all($datepatern, $tr[0][$i], $dateparsed);
+			$dateArray[$i] = $dateparsed[0][0]; # store the date into new array
+		}
+	}
+
+	# rearrange array index
+	$dateArray =  array_values($dateArray);
+	print_r($dateArray);
+	#print_r($tr[0]);
 }
 
 ?>

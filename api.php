@@ -28,7 +28,7 @@ if(isset($_GET['trackingNo']))
 	$dateArray = array();
 	for($i=0;$i<count($tr[0]);$i++)
 	{
-		# check if the string not contains some string (only contains the date)
+		# check if the string only contains the date
 		if(strpos($tr[0][$i], '<tact>') === false)
 		{
 			# use regex to parse
@@ -37,15 +37,22 @@ if(isset($_GET['trackingNo']))
 			$dateArray[$i] = strip_tags($dateparsed[0][0]); # store the date into new array
 		}
 	}
-	# rearrange array index
-	$dateArray =  array_values($dateArray);
+	# rearrange array index, and shift the index by 1
+	$dateArray = array_combine(range(1, count($dateArray)), array_values($dateArray));
 
 	# parse the tracking table, get only the good stuff, and store into array
 	$trackres = array();
 	$j = 0; # index for accessing date array
-
+	
 	for($i=0;$i<count($tr[0]);$i++)
 	{
+		# check if the string contains the date
+		if(strpos($tr[0][$i], '<tact>') === false)
+		{
+			# increase the index when we found string with date
+			$j++;
+		}
+
 		# check if the string not contains the date
 		if(strpos($tr[0][$i], '<tact>') !== false)
 		{
@@ -53,18 +60,18 @@ if(isset($_GET['trackingNo']))
 	        $tdpatern = "#<td>(.*?)</td>#";
 	        preg_match_all($tdpatern, $tr[0][$i], $td);
 	        
-	        # store into variable, strip_tags is for removeing html tags
+	        # store into variable, strip_tags is for removing html tags
             $process = strip_tags($td[0][0]);
             $time = strip_tags($td[0][1]);
             $location = strip_tags($td[0][2]);
+            $date = $dateArray[$j];
 
-            echo "Process: $process <br>";
+            echo "Date: $date <br>";
             echo "Time: $time <br>";
+            echo "Process: $process <br>";
             echo "Location: $location <br><br>";
 		}
 	}
-
-	#print_r($tr[0]);
 }
 
 ?>

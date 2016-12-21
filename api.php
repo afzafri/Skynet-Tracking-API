@@ -104,7 +104,8 @@ if(isset($_GET['trackingNo']))
     $trackres['info']['project_page'] = "https://github.com/afzafri/Skynet-Tracking-API";
     $trackres['info']['date_updated'] =  "21/12/2016";
 
-	print_r($trackres);
+	# output/display the JSON formatted string
+    echo json_encode($trackres);
 }
 
 ?>

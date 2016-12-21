@@ -66,12 +66,21 @@ if(isset($_GET['trackingNo']))
             $location = strip_tags($td[0][2]);
             $date = $dateArray[$j];
 
-            echo "Date: $date <br>";
-            echo "Time: $time <br>";
-            echo "Process: $process <br>";
-            echo "Location: $location <br><br>";
+            # store into associative array
+            $trackres['data'][$i]['date'] = $date;
+            $trackres['data'][$i]['time'] = $time;
+            $trackres['data'][$i]['process'] = $process;
+            $trackres['data'][$i]['location'] = $location;
 		}
 	}
+
+	# add project info into the array
+    $trackres['info']['creator'] = "Afif Zafri (afzafri)";
+    $trackres['info']['project_page'] = "https://github.com/afzafri/Skynet-Tracking-API";
+    $trackres['info']['date_updated'] =  "21/12/2016";
+
+
+	print_r($trackres);
 }
 
 ?>

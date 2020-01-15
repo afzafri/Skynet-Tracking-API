@@ -39,6 +39,7 @@ if(isset($_GET['trackingNo']))
 
 	$trackres = array();
 	$trackres['http_code'] = $httpstatus; # set http response code into the array
+	$trackres['error_msg'] = $errormsg; # set error message into array
 
 	# use DOMDocument to parse HTML
 	$dom = new DOMDocument();

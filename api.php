@@ -49,6 +49,7 @@ if(isset($_GET['trackingNo']))
 	$rows = $table->getElementsByTagName('tr');
 
 	$trackres = array();
+	$date = "";
 	$i = 0;
 	foreach ($rows as $row) {
 
@@ -59,10 +60,21 @@ if(isset($_GET['trackingNo']))
 		# use xpath to query to find elements with certain class or id
     $xpath = new DOMXPath($newDom);
 
+		// ----- Get row that contain Date -----
+		$dateTrackDiv = $xpath->query("//*[contains(@class, 'dateTrackDiv')]");
+
+		if($dateTrackDiv->length > 0) {
+			$date = $dateTrackDiv[0]->nodeValue; // update the date variable
+		}
+
+		// ----- Get table that contains the time, process, and location -----
     $trackItemLeft = $xpath->query("//*[contains(@class, 'trackItemLeft')]");
 		$trackItemFont = $xpath->query("//*[contains(@class, 'trackItemFont')]");
 
 		if($trackItemLeft->length > 0 && $trackItemFont->length > 0) {
+				// ----- GET DATE -----
+				$trackres['data'][$i]['date'] = $date;
+
 				// ----- GET TIME -----
 				$trackres['data'][$i]['time'] = $trackItemLeft[0]->nodeValue;
 

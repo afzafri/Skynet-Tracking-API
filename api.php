@@ -12,11 +12,11 @@ header("Access-Control-Allow-Origin: *"); # enable CORS
 
 if(isset($_GET['trackingNo']))
 {
-	$trackingNo = $_GET['trackingNo']; # put your poslaju tracking number here
+	$trackingNo = $_GET['trackingNo']; # put your skynet tracking number here
 
-	$url = "http://www.skynet.com.my/track"; # poslaju update their website with ssl on 2018
+	$url = "http://www.skynet.com.my/track";
 
-	# store post data into array (poslaju website only receive the tracking no with POST, not GET. So we need to POST data)
+	# store post data into array (skynet website only receive the tracking no with POST, not GET. So we need to POST data)
 	$postdata = http_build_query(
 			array(
 					'hawbNoList' => $trackingNo,

@@ -56,15 +56,24 @@ if(isset($_GET['trackingNo']))
     $newDom = new DOMDocument();
     $cloned = $row->cloneNode(TRUE);
     $newDom->appendChild($newDom->importNode($cloned, True));
+		# use xpath to query to find elements with certain class or id
     $xpath = new DOMXPath($newDom);
 
     $trackItemLeft = $xpath->query("//*[contains(@class, 'trackItemLeft')]");
 		$trackItemFont = $xpath->query("//*[contains(@class, 'trackItemFont')]");
 
-		// Get Time
-		if($trackItemLeft->length > 0) {
+		if($trackItemLeft->length > 0 && $trackItemFont->length > 0) {
+				// ----- GET TIME -----
 				$trackres['data'][$i]['time'] = $trackItemLeft[0]->nodeValue;
+
+				// ----- GET PROCESS & LOCATION -----
+				$processTable = $newDom->getElementsByTagName('table');
+				$detailTable = $processTable[0]->getElementsByTagName('table');
+				$detailColumn = $detailTable[0]->getElementsByTagName('td');
+				$trackres['data'][$i]['process'] = $detailColumn[0]->nodeValue;
+				$trackres['data'][$i]['location'] = $detailColumn[1]->nodeValue;
 		}
+
 
 		$i++;
 	}

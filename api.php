@@ -37,6 +37,9 @@ if(isset($_GET['trackingNo']))
 	$errormsg = (curl_error($ch)) ? curl_error($ch) : "No error"; # catch error message
 	curl_close($ch);  # close curl
 
+	$trackres = array();
+	$trackres['http_code'] = $httpstatus; # set http response code into the array
+
 	# use DOMDocument to parse HTML
 	$dom = new DOMDocument();
 	libxml_use_internal_errors(true);
@@ -44,85 +47,72 @@ if(isset($_GET['trackingNo']))
 	libxml_clear_errors();
 
 	$trackDetails = $dom->getElementById('trackDetails');
-	$tables = $trackDetails->getElementsByTagName('table');
-	$table = $tables[0];
-	$rows = $table->getElementsByTagName('tr');
 
-	$trackres = array();
-	$date = "";
-	$i = 0;
-	foreach ($rows as $row) {
+	if($trackDetails != null) # check if there is records found or not
+	{
+		$tables = $trackDetails->getElementsByTagName('table');
+		$table = $tables[0];
+		$rows = $table->getElementsByTagName('tr');
 
-		// set current ad object as new DOMDocument object so we can parse it
-    $newDom = new DOMDocument();
-    $cloned = $row->cloneNode(TRUE);
-    $newDom->appendChild($newDom->importNode($cloned, True));
-		# use xpath to query to find elements with certain class or id
-    $xpath = new DOMXPath($newDom);
+		$date = "";
+		$i = 0;
 
-		// ----- Get row that contain Date -----
-		$dateTrackDiv = $xpath->query("//*[contains(@class, 'dateTrackDiv')]");
+		foreach ($rows as $row) {
 
-		if($dateTrackDiv->length > 0) {
-			$date = $dateTrackDiv[0]->nodeValue; // update the date variable
+			// set current ad object as new DOMDocument object so we can parse it
+	    $newDom = new DOMDocument();
+	    $cloned = $row->cloneNode(TRUE);
+	    $newDom->appendChild($newDom->importNode($cloned, True));
+			# use xpath to query to find elements with certain class or id
+	    $xpath = new DOMXPath($newDom);
+
+			// ----- Get row that contain Date -----
+			$dateTrackDiv = $xpath->query("//*[contains(@class, 'dateTrackDiv')]");
+
+			if($dateTrackDiv->length > 0) {
+				$date = $dateTrackDiv[0]->nodeValue; // update the date variable
+			}
+
+			// ----- Get table that contains the time, process, and location -----
+	    $trackItemLeft = $xpath->query("//*[contains(@class, 'trackItemLeft')]");
+			$trackItemFont = $xpath->query("//*[contains(@class, 'trackItemFont')]");
+
+			if($trackItemLeft->length > 0 && $trackItemFont->length > 0) {
+					// ----- GET DATE -----
+					$trackres['data'][$i]['date'] = $date;
+
+					// ----- GET TIME -----
+					$trackres['data'][$i]['time'] = $trackItemLeft[0]->nodeValue;
+
+					// ----- GET PROCESS & LOCATION -----
+					$processTable = $newDom->getElementsByTagName('table');
+					$detailTable = $processTable[0]->getElementsByTagName('table');
+					$detailColumn = $detailTable[0]->getElementsByTagName('td');
+					$trackres['data'][$i]['process'] = $detailColumn[0]->nodeValue;
+					$trackres['data'][$i]['location'] = $detailColumn[1]->nodeValue;
+
+					$i++;
+			}
 		}
-
-		// ----- Get table that contains the time, process, and location -----
-    $trackItemLeft = $xpath->query("//*[contains(@class, 'trackItemLeft')]");
-		$trackItemFont = $xpath->query("//*[contains(@class, 'trackItemFont')]");
-
-		if($trackItemLeft->length > 0 && $trackItemFont->length > 0) {
-				// ----- GET DATE -----
-				$trackres['data'][$i]['date'] = $date;
-
-				// ----- GET TIME -----
-				$trackres['data'][$i]['time'] = $trackItemLeft[0]->nodeValue;
-
-				// ----- GET PROCESS & LOCATION -----
-				$processTable = $newDom->getElementsByTagName('table');
-				$detailTable = $processTable[0]->getElementsByTagName('table');
-				$detailColumn = $detailTable[0]->getElementsByTagName('td');
-				$trackres['data'][$i]['process'] = $detailColumn[0]->nodeValue;
-				$trackres['data'][$i]['location'] = $detailColumn[1]->nodeValue;
-		}
-
-
-		$i++;
+	}
+	else
+	{
+		$trackres['message'] = "No Record Found"; # return record not found if number of row < 0
+    # since no record found, no need to parse the html furthermore
 	}
 
-	print_r($trackres);
+	# add project info into the array
+  $trackres['info']['creator'] = "Afif Zafri (afzafri)";
+  $trackres['info']['project_page'] = "https://github.com/afzafri/Skynet-Tracking-API";
+  $trackres['info']['date_updated'] =  "15/01/2020";
 
-	// # parse the table, get by row
-	// $trpatern = "#<tr(.*?)<\/tr>#";
-	// preg_match_all($trpatern, implode($parsed[0],''), $tr);
-	//
-	// # parse and store only the date into an array.
-	// # skynet html table does not store the date in column, but in row.
-	// # so we need to fetch the row, and store into column (hope this make sense lol)
-	// $dateArray = array();
-	//
-	// if(count($tr[0]) > 0) # check if there is records found or not
-	// {
-	// 	for($i=0;$i<count($tr[0]);$i++)
-	// 	{
-	// 		# check if the string only contains the date
-	// 		if(strpos($tr[0][$i], '<tact>') === false)
-	// 		{
-	// 			# use regex to parse
-	// 			$datepatern = "#<b>(.*?)</b>#";
-	// 			preg_match_all($datepatern, $tr[0][$i], $dateparsed);
-	// 			$dateArray[$i] = strip_tags($dateparsed[0][0]); # store the date into new array
-	// 		}
-	// 	}
-	//
-	// 	# rearrange array index, and shift the index by 1
-	// 	$dateArray = array_combine(range(1, count($dateArray)), array_values($dateArray));
-	// }
+	# output/display the JSON formatted string
+  echo json_encode($trackres);
+
 	//
 	// # parse the tracking table, get only the good stuff, and store into and associative array
 	// $trackres = array();
-	// $trackres['http_code'] = $httpstatus; # set http response code into the array
-	// $j = 0; # index for accessing date array
+
 	//
 	// if(count($tr[0]) > 0) # check if there is records found or not
 	// {

@@ -108,61 +108,6 @@ if(isset($_GET['trackingNo']))
 
 	# output/display the JSON formatted string
   echo json_encode($trackres);
-
-	//
-	// # parse the tracking table, get only the good stuff, and store into and associative array
-	// $trackres = array();
-
-	//
-	// if(count($tr[0]) > 0) # check if there is records found or not
-	// {
-	// 	$trackres['message'] = "Record Found"; # return record found if number of row > 0
-	//
-	// 	for($i=0;$i<count($tr[0]);$i++)
-	// 	{
-	// 		# check if the string contains the date
-	// 		if(strpos($tr[0][$i], '<tact>') === false)
-	// 		{
-	// 			# increase the index when we found string with date
-	// 			$j++;
-	// 		}
-	//
-	// 		# check if the string not contains the date
-	// 		if(strpos($tr[0][$i], '<tact>') !== false)
-	// 		{
-	// 			# parse the table by column <td>
-	// 	        $tdpatern = "#<td>(.*?)</td>#";
-	// 	        preg_match_all($tdpatern, $tr[0][$i], $td);
-	//
-	// 	        # store into variable, strip_tags is for removing html tags
-	//             $process = strip_tags($td[0][0]);
-	//             $time = strip_tags($td[0][1]);
-	//             $location = strip_tags($td[0][2]);
-	//             $date = $dateArray[$j];
-	//
-	//             # store into associative array
-	//             $trackres['data'][$i]['date'] = $date;
-	//             $trackres['data'][$i]['time'] = $time;
-	//             $trackres['data'][$i]['process'] = $process;
-	//             $trackres['data'][$i]['location'] = $location;
-	// 		}
-	// 	}
-	// 	# rearrange the array index, make it start from 0
-	// 	$trackres['data'] = array_values($trackres['data']);
-	// }
-	// else
-	// {
-	// 	$trackres['message'] = "No Record Found"; # return record not found if number of row < 0
-  //       # since no record found, no need to parse the html furthermore
-	// }
-	//
-	// # add project info into the array
-  //   $trackres['info']['creator'] = "Afif Zafri (afzafri)";
-  //   $trackres['info']['project_page'] = "https://github.com/afzafri/Skynet-Tracking-API";
-  //   $trackres['info']['date_updated'] =  "21/12/2016";
-	//
-	// # output/display the JSON formatted string
-  //   echo json_encode($trackres);
 }
 
 ?>

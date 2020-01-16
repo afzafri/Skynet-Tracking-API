@@ -2,13 +2,14 @@
 - Return JSON formatted string of Skynet Tracking details
 - I have been looking for Skynet API but I cannot find the one that actually work and easy to use, so, I developed my own.
 - Can be use for tracking the Skynet parcel in your own project/system
-- Note: 
+- Note:
   - This is not the official API, this is actually just a "hack", or workaround for obtaining the tracking data.
-  - This API will fetch data directly from the Skynet Tracking website, so if there are any problem with the site, this API will also affected. 
-  
+  - This API will fetch data directly from the Skynet Tracking website, so if there are any problem with the site, this API will also affected.
+
 # Created By
 - Afif Zafri
 - Date: 21/12/2016
+- Updated At: 15/01/2020
 - Contact: http://fb.me/afzafri
 
 # Installation

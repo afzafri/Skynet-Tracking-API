@@ -51,6 +51,8 @@ if(isset($_GET['trackingNo']))
 
 	if($trackDetails != null) # check if there is records found or not
 	{
+		$trackres['message'] = "Record Found"; # return record found if number of row > 0
+
 		$tables = $trackDetails->getElementsByTagName('table');
 		$table = $tables[0];
 		$rows = $table->getElementsByTagName('tr');

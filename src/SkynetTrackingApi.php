@@ -43,6 +43,7 @@ class SkynetTrackingApi
 
 		if($trackDetails != null) # check if there is records found or not
 		{
+			$trackres['status'] = 1;
 			$trackres['message'] = "Record Found"; # return record found if number of row > 0
 
 			$tables = $trackDetails->getElementsByTagName('table');
@@ -90,6 +91,7 @@ class SkynetTrackingApi
 				}
 			}
 		} else {
+			$trackres['status'] = 0;
 			$trackres['message'] = "No Record Found"; # return record not found if number of row < 0
 	    	# since no record found, no need to parse the html furthermore
 		}
